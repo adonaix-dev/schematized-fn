@@ -1,0 +1,46 @@
+{
+    "name": "schematized-fun",
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Bring strict types to runtime! Define complex function signatures and overloads using any Standard Schema library and enjoy full TypeScript inference.",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/adonaix-dev/schematized-fun.git"
+    },
+    "author": "Arthur Adonai <>",
+    "license": "MIT",
+    "packageManager": "bun@1.3.6",
+    "engines": {
+        "node": "^20.0.0"
+    },
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "keywords": [
+        "typescript",
+        "runtime-validation",
+        "function-overloads",
+        "standard-schema",
+        "type-inference",
+        "zod",
+        "valibot",
+        "arktype"
+    ],
+    "scripts": {
+        "format": "prettier -wu \"./**/*\""
+    },
+    "dependencies": {
+        "@standard-schema/spec": "^1.1.0"
+    },
+    "devDependencies": {
+        "@adonaix/types": "link:@adonaix/types",
+        "@ianvs/prettier-plugin-sort-imports": "^4.7.0",
+        "@types/bun": "^1.3.6",
+        "adonaix-lib": "link:adonaix-lib",
+        "prettier": "^3.7.4",
+        "prettier-plugin-jsdoc": "^1.8.0",
+        "prettier-plugin-pkg": "^0.21.2"
+    }
+}
