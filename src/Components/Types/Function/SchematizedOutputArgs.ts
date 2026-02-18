@@ -8,6 +8,13 @@ type MapToOutput<Args extends SchematizedArgsDefinition> =
         ? { -readonly [Key in keyof Args]: StdSchemaV1.InferOutput<Args[Key]> }
         : never;
 
+/**
+ * Represents the **output** arguments derived from a tuple of
+ * Standard Schema V1 schemas. These are the types guaranteed _after_
+ * validation/transformation.
+ *
+ * @template Args The definition of the arguments schemas.
+ */
 type SchematizedOutputArgs<Args extends SchematizedArgsDefinition> =
     RestArgs<Args> extends infer Rest extends StdSchemaV1
         ? [...MapToOutput<Args>, ...StdSchemaV1.InferOutput<Rest>[]]

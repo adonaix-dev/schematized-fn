@@ -4,8 +4,15 @@ import type { StdSchemaV1 } from "~/Common/StdSchemaV1";
 
 import { SchematizedError } from "./SchematizedError";
 
+/**
+ * Error thrown when arguments fail validation against a schema.
+ */
 class ArgumentsError extends SchematizedError {
     override name = "ArgumentsError";
+
+    /**
+     * The list of validation issues encountered.
+     */
     readonly issues!: readonly StdSchemaV1.Issue[];
 
     constructor(issues: readonly StdSchemaV1.Issue[]) {

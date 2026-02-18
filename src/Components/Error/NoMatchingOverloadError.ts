@@ -2,8 +2,18 @@ import { ArgumentsError } from "./ArgumentsError";
 import { SchematizedError } from "./SchematizedError";
 import type { SynchronousValidationError } from "./SynchronousValidationError";
 
+/**
+ * Error thrown when no overload signature matches the provided
+ * arguments.
+ */
 class NoMatchingOverloadError extends SchematizedError {
     override name = "NoMatchingOverloadError";
+
+    /**
+     * The list of errors encountered for each overload signature
+     * attempted. The index of the error corresponds to the index of
+     * the overload in the definition order.
+     */
     override readonly cause!: (ArgumentsError | SynchronousValidationError)[];
 
     constructor(failures: (ArgumentsError | SynchronousValidationError)[]) {

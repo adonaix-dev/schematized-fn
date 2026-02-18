@@ -1,5 +1,10 @@
 import { SchematizedError } from "./SchematizedError";
 
+/**
+ * Error thrown when a synchronous validation method (e.g., `parse`,
+ * `apply`) is called, but the underlying schema implementation
+ * requires asynchronous validation (returns a Promise).
+ */
 class SynchronousValidationError extends SchematizedError {
     override readonly name = "SynchronousValidationError";
 

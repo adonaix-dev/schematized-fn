@@ -4,15 +4,23 @@ import { SynchronousValidationError } from "~/Error/SynchronousValidationError";
 import type { SchematizedArgsDefinition } from "~/Types/Definition/SchematizedArgsDefinition";
 import type { SchematizedImplementation } from "~/Types/Function/SchematizedImplementation";
 import type { OverloadBranch } from "~/Types/Overload/Internal/OverloadBranch";
-import type { SchematizedOverloadedArgs } from "~/Types/Overload/Internal/SchematizedOverloadedArgs";
-import type { SchematizedOverloadedReturn } from "~/Types/Overload/Internal/SchematizedOverloadedReturn";
+import type { SchematizedOverloadedArgs } from "~/Types/Overload/SchematizedOverloadedArgs";
 import type { SchematizedOverloadedAsyncFunction } from "~/Types/Overload/SchematizedOverloadedAsyncFunction";
 import type { SchematizedOverloadedFunction } from "~/Types/Overload/SchematizedOverloadedFunction";
+import type { SchematizedOverloadedReturn } from "~/Types/Overload/SchematizedOverloadedReturn";
 import type { SchematizedOverloadSignature } from "~/Types/Overload/SchematizedOverloadSignature";
 import type { ThisArg } from "~/Types/ThisArg";
 
 import { SchematizedTuple } from "./Tuple/SchematizedTuple";
 
+/**
+ * Represents a function that supports multiple signatures
+ * (overloads), validating arguments against Standard Schema V1
+ * definitions to determine the correct implementation to execute.
+ *
+ * @template This The type of the `this` context.
+ * @template Overloads The list of registered overloads.
+ */
 class SchematizedOverloads<
     This,
     Overloads extends readonly SchematizedOverloadSignature[] = [],
@@ -23,10 +31,25 @@ class SchematizedOverloads<
         this.#branches = [...branches];
     }
 
+    /**
+     * Creates a new
+     * {@link SchematizedOverloads `SchematizedOverloads`} instance.
+     */
     static create<This = void>(): SchematizedOverloads<This> {
         return new SchematizedOverloads();
     }
 
+    /**
+     * Registers a new overload signature with **higher** priority (it
+     * will be checked before existing overloads).
+     *
+     * @param schema The definition of the arguments schemas.
+     * @param implementation The implementation of the function for
+     *   this specific overload.
+     *
+     * @returns **A new instance** with the added overload at the
+     *   beginning.
+     */
     prepend<const As extends SchematizedArgsDefinition, R>(
         schema: As,
         implementation: SchematizedImplementation<This, As, R>,
@@ -40,6 +63,16 @@ class SchematizedOverloads<
         );
     }
 
+    /**
+     * Registers a new overload signature with **lower** priority (it
+     * will be checked after existing overloads).
+     *
+     * @param schema The definition of the arguments schemas.
+     * @param implementation The implementation of the function for
+     *   this specific overload.
+     *
+     * @returns **A new instance** with the added overload at the end.
+     */
     append<const As extends SchematizedArgsDefinition, R>(
         schema: As,
         implementation: SchematizedImplementation<This, As, R>,
@@ -50,6 +83,18 @@ class SchematizedOverloads<
         });
     }
 
+    /**
+     * Executes the function by finding the first matching overload
+     * for the provided arguments synchronously.
+     *
+     * @param thisArg The `this` context.
+     * @param args The input arguments.
+     *
+     * @returns The return value of the matched overload
+     *   implementation.
+     * @throws {NoMatchingOverloadError} If no overload matches the
+     *   provided arguments.
+     */
     apply<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         args: As,
@@ -70,6 +115,18 @@ class SchematizedOverloads<
         throw new NoMatchingOverloadError(failures);
     }
 
+    /**
+     * Executes the function by finding the first matching overload
+     * for the provided arguments asynchronously.
+     *
+     * @param thisArg The `this` context.
+     * @param args The input arguments.
+     *
+     * @returns The return value of the matched overload
+     *   implementation.
+     * @throws {NoMatchingOverloadError} If no overload matches the
+     *   provided arguments.
+     */
     async applyAsync<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         args: As,
@@ -88,6 +145,18 @@ class SchematizedOverloads<
         throw new NoMatchingOverloadError(failures);
     }
 
+    /**
+     * Calls the function synchronously with the provided arguments
+     * (spread syntax).
+     *
+     * @param thisArg The `this` context.
+     * @param args The input arguments.
+     *
+     * @returns The return value of the matched overload.
+     * @throws {NoMatchingOverloadError} If no overload matches the
+     *   provided arguments.
+     * @see {@link apply `apply()`}
+     */
     call<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         ...args: As
@@ -95,6 +164,18 @@ class SchematizedOverloads<
         return this.apply(thisArg, args);
     }
 
+    /**
+     * Calls the function asynchronously with the provided arguments
+     * (spread syntax).
+     *
+     * @param thisArg The `this` context.
+     * @param args The input arguments.
+     *
+     * @returns The return value of the matched overload.
+     * @throws {NoMatchingOverloadError} If no overload matches the
+     *   provided arguments.
+     * @see {@link applyAsync `applyAsync()`}
+     */
     async callAsync<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         ...args: As
@@ -102,6 +183,12 @@ class SchematizedOverloads<
         return await this.applyAsync(thisArg, args);
     }
 
+    /**
+     * Bundles the registered overloads into a single closure that
+     * handles dispatching.
+     *
+     * @returns A function that can be called directly.
+     */
     toFunction(): SchematizedOverloadedFunction<This, Overloads> {
         const self = this;
 
@@ -110,6 +197,12 @@ class SchematizedOverloads<
         } as any;
     }
 
+    /**
+     * Bundles the registered overloads into a single asynchronous
+     * closure that handles dispatching.
+     *
+     * @returns An async function that can be called directly.
+     */
     toAsyncFunction(): SchematizedOverloadedAsyncFunction<This, Overloads> {
         const self = this;
 

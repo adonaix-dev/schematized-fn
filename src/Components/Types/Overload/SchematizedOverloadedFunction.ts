@@ -5,6 +5,12 @@ import type { SchematizedInputArgs } from "~/Types/Function/SchematizedInputArgs
 
 import type { SchematizedOverloadSignature } from "./SchematizedOverloadSignature";
 
+/**
+ * Represents the final **synchronous** overloaded function type.
+ *
+ * @template This The type of the `this` context.
+ * @template Overloads The list of registered overloads.
+ */
 type SchematizedOverloadedFunction<
     This,
     Overloads extends readonly SchematizedOverloadSignature[],
