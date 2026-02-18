@@ -20,10 +20,11 @@
     ],
     "keywords": [
         "typescript",
-        "runtime-validation",
-        "function-overloads",
+        "validation",
+        "function",
+        "overload",
         "standard-schema",
-        "type-inference",
+        "types",
         "zod",
         "valibot",
         "arktype"
