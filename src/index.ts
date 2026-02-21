@@ -15,6 +15,7 @@ export type { SchematizedInputArgs } from "~/Types/Function/SchematizedInputArgs
 export type { SchematizedOutputArgs } from "~/Types/Function/SchematizedOutputArgs";
 
 export type { SchematizedOverloadedArgs } from "~/Types/Overload/SchematizedOverloadedArgs";
+export type { SchematizedOverloadedAsyncFunction } from "~/Types/Overload/SchematizedOverloadedAsyncFunction";
 export type { SchematizedOverloadedFunction } from "~/Types/Overload/SchematizedOverloadedFunction";
 export type { SchematizedOverloadedReturn } from "~/Types/Overload/SchematizedOverloadedReturn";
 export type { SchematizedOverloadSignature } from "~/Types/Overload/SchematizedOverloadSignature";
