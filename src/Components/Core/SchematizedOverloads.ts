@@ -28,7 +28,7 @@ class SchematizedOverloads<
     #branches: OverloadBranch[];
 
     private constructor(...branches: OverloadBranch[]) {
-        this.#branches = [...branches];
+        this.#branches = branches;
     }
 
     /**
@@ -130,7 +130,7 @@ class SchematizedOverloads<
     async applyAsync<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         args: As,
-    ): Promise<SchematizedOverloadedReturn<Overloads, As>> {
+    ): Promise<Awaited<SchematizedOverloadedReturn<Overloads, As>>> {
         const failures: ArgumentsError[] = [];
 
         for (const { schema, implementation } of this.#branches) {
@@ -138,7 +138,7 @@ class SchematizedOverloads<
 
             if (result.issues) failures.push(new ArgumentsError(result.issues));
             else {
-                return Reflect.apply(implementation, thisArg, result.value);
+                return await Reflect.apply(implementation, thisArg, result.value);
             }
         }
 
@@ -179,7 +179,7 @@ class SchematizedOverloads<
     async callAsync<As extends SchematizedOverloadedArgs<Overloads>>(
         thisArg: ThisArg<This>,
         ...args: As
-    ): Promise<SchematizedOverloadedReturn<Overloads, As>> {
+    ): Promise<Awaited<SchematizedOverloadedReturn<Overloads, As>>> {
         return await this.applyAsync(thisArg, args);
     }
 

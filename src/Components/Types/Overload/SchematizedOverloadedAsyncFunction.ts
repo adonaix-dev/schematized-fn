@@ -21,7 +21,10 @@ type SchematizedOverloadedAsyncFunction<
             infer Args extends SchematizedArgsDefinition,
             infer Return
         >
-            ? (this: This, ...args: SchematizedInputArgs<Args>) => Promise<Return>
+            ? (
+                  this: This,
+                  ...args: SchematizedInputArgs<Args>
+              ) => Promise<Awaited<Return>>
             : never;
     }[number]
 >;

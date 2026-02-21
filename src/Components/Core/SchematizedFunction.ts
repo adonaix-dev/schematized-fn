@@ -82,12 +82,12 @@ class SchematizedFunction<
     async applyAsync(
         thisArg: ThisArg<This>,
         args: SchematizedInputArgs<Args>,
-    ): Promise<Return> {
+    ): Promise<Awaited<Return>> {
         const result = await this.#schema.validate(args);
 
         if (result.issues) throw new ArgumentsError(result.issues);
 
-        return Reflect.apply(this.#implementation, thisArg, result.value);
+        return await Reflect.apply(this.#implementation, thisArg, result.value);
     }
 
     /**
@@ -121,7 +121,7 @@ class SchematizedFunction<
     async callAsync(
         thisArg: ThisArg<This>,
         ...args: SchematizedInputArgs<Args>
-    ): Promise<Return> {
+    ): Promise<Awaited<Return>> {
         return await this.applyAsync(thisArg, args);
     }
 
@@ -148,10 +148,10 @@ class SchematizedFunction<
     toAsyncFunction(): (
         this: ThisArg<This>,
         ...args: SchematizedInputArgs<Args>
-    ) => Promise<Return> {
+    ) => Promise<Awaited<Return>> {
         const self = this;
 
-        return async function (this: any, ...args: any): Promise<Return> {
+        return async function (this: any, ...args: any): Promise<Awaited<Return>> {
             return await self.applyAsync(this, args);
         };
     }
